@@ -207,23 +207,16 @@ def main():
         test_data_loader = get_loader(opt.test, sentence_encoder, N=N, K=K, Q=Q, na_rate=opt.na_rate, batch_size=batch_size)
 
         # 生成dataloader
-        # train_adv_examples = GetAdvExample(train_adv_rank, tokenizer)
-        # train_adv_dataloader = DataLoader(PBertDataset(opt, train_adv_examples, tokenizer, sentence_encoder, N=N, K=K, Q=Q,
-        #                                         na_rate=opt.na_rate, batch_size=opt.batch_size), batch_size=opt.batch_size, shuffle=False, num_workers=0,
-        #                                         collate_fn=PBertDataset.collate_fn, worker_init_fn=_worker_init_fn_())
-        # # 为了让index是顺序的，令shuffle=False
-        # val_adv_examples = GetAdvExample(val_adv_rank, tokenizer)
-        # val_adv_dataloader = DataLoader(PBertDataset(opt, val_adv_examples, tokenizer, sentence_encoder, N=N, K=K, Q=Q,
-        #                                         na_rate=opt.na_rate, batch_size=opt.batch_size), batch_size=opt.batch_size, shuffle=False, num_workers=0,
-        #                                         collate_fn=PBertDataset.collate_fn, worker_init_fn=_worker_init_fn_())
+        train_adv_examples = GetAdvExample(train_adv_rank, tokenizer)
+        train_adv_dataloader = DataLoader(PBertDataset(opt, train_adv_examples, tokenizer, sentence_encoder, N=N, K=K, Q=Q,
+                                                na_rate=opt.na_rate, batch_size=opt.batch_size), batch_size=opt.batch_size, shuffle=False, num_workers=0,
+                                                collate_fn=PBertDataset.collate_fn, worker_init_fn=_worker_init_fn_())
+        # 为了让index是顺序的，令shuffle=False
+        val_adv_examples = GetAdvExample(val_adv_rank, tokenizer)
+        val_adv_dataloader = DataLoader(PBertDataset(opt, val_adv_examples, tokenizer, sentence_encoder, N=N, K=K, Q=Q,
+                                                na_rate=opt.na_rate, batch_size=opt.batch_size), batch_size=opt.batch_size, shuffle=False, num_workers=0,
+                                                collate_fn=PBertDataset.collate_fn, worker_init_fn=_worker_init_fn_())
         #
-        # # 保存dataloader
-        # data = list(train_adv_dataloader)
-        # with open('./data/5-1-na1.5-b1-new/train_adv_dataloader.pkl.gz', 'wb') as f:
-        #     pickle.dump(data, f)
-        # data = list(val_adv_dataloader)
-        # with open('./data/5-1-na1.5-b1-new/val_adv_dataloader.pkl.gz', 'wb') as f:
-        #     pickle.dump(data, f)
 
         # 读取dataloader内容
         with open('./data/' + str(opt.N) + '-' + str(opt.K) + '-na1.5-b4-new/train_adv_dataloader.pkl.gz', 'rb') as f:
@@ -253,10 +246,6 @@ def main():
         if opt.adv:
             adv_data_loader = get_loader_unsupervised(opt.adv, sentence_encoder,
                 N=trainN, K=K, Q=Q, na_rate=opt.na_rate, batch_size=batch_size)
-    # 若需要codalab测试，则加载codalab的input集
-    if opt.codalab:
-        test_data_loader = get_loader_codalab('test_wiki_input-{}-{}'.format(N, K), sentence_encoder,
-                                              N=N, K=K, Q=Q, na_rate=opt.na_rate, batch_size=1)
    
     if opt.optim == 'sgd':
         pytorch_optim = optim.SGD
